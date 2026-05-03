@@ -1,0 +1,85 @@
+{
+  "components": {
+    "grill_stator": {
+      "fanSize": {
+        "type": "float",
+        "default": 92.0,
+        "range": [92.0, 120.0],
+        "rationale": "Matches standard 92mm fan specifications."
+      },
+      "mountingHoleDistance": {
+        "type": "float",
+        "default": 82.5,
+        "rationale": "Standardized center-to-center distance for 92mm cases."
+      },
+      "mountingHoleDiameter": {
+        "type": "float",
+        "default": 4.5,
+        "rationale": "Clearance for standard M4 or standard fan screws."
+      },
+      "spokeCount": {
+        "type": "int",
+        "default": 8,
+        "rationale": "Maintained from original OpenSCAD code."
+      }
+    },
+    "rotor_blades": {
+      "fanDiameter": {
+        "type": "float",
+        "default": 90.0,
+        "range": [85.0, 91.0],
+        "rationale": "Leaves a 1.0 mm tip clearance gap between blades and the 92mm outer frame."
+      },
+      "bladeCount": {
+        "type": "int",
+        "default": 9,
+        "options": [7, 9],
+        "rationale": "Must be prime and NOT share a common denominator with the 8 spokes. Prevents extreme acoustic resonance."
+      },
+      "airfoil": {
+        "type": "string",
+        "default": "NACA 4412",
+        "options": ["NACA 4412", "NACA 6512"],
+        "rationale": "Validated, highly cambered profiles designed for low-speed turbomachinery."
+      },
+      "twist_hub": {
+        "type": "float",
+        "default": 45.0,
+        "range": [35.0, 55.0],
+        "rationale": "Compensates for the difference in tangential velocity along the blade span."
+      },
+      "twist_tip": {
+        "type": "float",
+        "default": 20.0,
+        "range": [15.0, 25.0],
+        "rationale": "Compensates for the difference in tangential velocity along the blade span."
+      },
+      "chord_hub": {
+        "type": "float",
+        "default": 25.0,
+        "range": [20.0, 30.0],
+        "rationale": "Thicker at the root for mechanical strength."
+      },
+      "chord_tip": {
+        "type": "float",
+        "default": 15.0,
+        "range": [10.0, 20.0],
+        "rationale": "Thinner at the tip for aerodynamic efficiency."
+      },
+      "radialClearance": {
+        "type": "float",
+        "default": 1.0,
+        "range": [0.5, 2.0],
+        "rationale": "Leaves a 1.0 mm tip clearance gap."
+      }
+    },
+    "shared": {
+      "hubDiameter": {
+        "type": "float",
+        "default": 35.0,
+        "range": [30.0, 40.0],
+        "rationale": "35.0 mm provides root strength and minimizes dead-zones."
+      }
+    }
+  }
+}

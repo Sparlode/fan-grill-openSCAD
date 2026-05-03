@@ -1,0 +1,152 @@
+{
+  "project": "92mm Axial Fan Assembly",
+  "version": "1.1.0",
+  "description": "Parametric model synchronized with 92mm Design Parameters.",
+  "pipeline": {
+    "cad_software": {
+      "tool": "OpenSCAD",
+      "method": "Programmatic 3D Modeling",
+      "notes": "Rotor requires mathematical sweeping via NACA airfoil libraries."
+    },
+    "simulation": {
+      "tool": "OpenFOAM",
+      "methods": [
+        "Steady-state MRF",
+        "Transient AMI"
+      ],
+      "meshing": "SnappyHexMesh / cfMesh"
+    }
+  },
+  "components": {
+    "grill_stator": {
+      "fanSize": {
+        "type": "float",
+        "default": 92.0,
+        "range": [92.0, 120.0],
+        "rationale": "Matches standard 92mm fan specifications."
+      },
+      "mountingHoleDistance": {
+        "type": "float",
+        "default": 82.5,
+        "rationale": "Standardized center-to-center distance for 92mm cases."
+      },
+      "mountingHoleDiameter": {
+        "type": "float",
+        "default": 4.5,
+        "rationale": "Clearance for standard M4 or standard fan screws."
+      },
+      "spokeCount": {
+        "type": "int",
+        "default": 8,
+        "rationale": "Maintained from original OpenSCAD code."
+      }
+    },
+    "rotor_blades": {
+      "fanDiameter": {
+        "type": "float",
+        "default": 90.0,
+        "range": [85.0, 91.0],
+        "rationale": "Leaves a 1.0 mm tip clearance gap between blades and the 92mm outer frame."
+      },
+      "bladeCount": {
+        "type": "int",
+        "default": 9,
+        "options": [7, 9],
+        "rationale": "Must be prime and NOT share a common denominator with the 8 spokes. Prevents extreme acoustic resonance."
+      },
+      "airfoil": {
+        "type": "string",
+        "default": "NACA 4412",
+        "options": ["NACA 4412", "NACA 6512"],
+        "rationale": "Validated, highly cambered profiles designed for low-speed turbomachinery."
+      },
+      "twist_hub": {
+        "type": "float",
+        "default": 45.0,
+        "range": [35.0, 55.0],
+        "rationale": "Compensates for the difference in tangential velocity along the blade span."
+      },
+      "twist_tip": {
+        "type": "float",
+        "default": 20.0,
+        "range": [15.0, 25.0],
+        "rationale": "Compensates for the difference in tangential velocity along the blade span."
+      },
+      "chord_hub": {
+        "type": "float",
+        "default": 25.0,
+        "range": [20.0, 30.0],
+        "rationale": "Thicker at the root for mechanical strength."
+      },
+      "chord_tip": {
+        "type": "float",
+        "default": 15.0,
+        "range": [10.0, 20.0],
+        "rationale": "Thinner at the tip for aerodynamic efficiency."
+      },
+      "radialClearance": {
+        "type": "float",
+        "default": 1.0,
+        "range": [0.5, 2.0],
+        "rationale": "Leaves a 1.0 mm tip clearance gap."
+      }
+    },
+    "shared": {
+      "hubDiameter": {
+        "type": "float",
+        "default": 35.0,
+        "range": [30.0, 40.0],
+        "rationale": "35.0 mm provides root strength and minimizes dead-zones."
+      }
+    }
+  },
+  "doe_study": {
+    "study_name": "92mm Industrial Fan - Static Pressure Sensitivity Analysis",
+    "version": "1.0.0",
+    "doe_type": "One-Factor-at-a-Time (OFAT) + Critical Edge Cases",
+    "objectives": {
+      "primary": "Identify geometry with >0.5 inH2O peak static pressure.",
+      "secondary": "Verify >90 CFM free delivery flow.",
+      "constraint": "Acoustic potential check (resonance with 8-spoke stator)."
+    },
+    "critical_sensitivity_points": [
+      {
+        "parameter": "radialClearance",
+        "hypothesis": "Reducing clearance from 1.0mm to 0.5mm will significantly increase pressure at high impedance.",
+        "test_values": [0.5, 1.0, 1.5]
+      },
+      {
+        "parameter": "bladeCount",
+        "hypothesis": "9 blades will provide smoother pressure delivery than 7, but may increase drag/power consumption.",
+        "test_values": [7, 9]
+      },
+      {
+        "parameter": "twist_hub",
+        "hypothesis": "Increased hub pitch (>45deg) is necessary to maintain flow against the dense PSU grill rings.",
+        "test_values": [40, 45, 50]
+      }
+    ],
+    "test_matrix": [
+      {
+        "id": "CASE_001_BASELINE",
+        "description": "Matches exact CSV design specifications.",
+        "overrides": {"bladeCount": 9, "radialClearance": 1.0, "twist_hub": 45, "hubDiameter": 35}
+      },
+      {
+        "id": "CASE_002_HIGH_PRESSURE",
+        "description": "Optimized for static pressure via tight tip clearance.",
+        "overrides": {"bladeCount": 9, "radialClearance": 0.5, "twist_hub": 45, "hubDiameter": 35}
+      },
+      {
+        "id": "CASE_003_LOW_DRAG",
+        "description": "7-blade configuration for high airflow / low noise potential.",
+        "overrides": {"bladeCount": 7, "radialClearance": 1.0, "twist_hub": 40, "hubDiameter": 35}
+      },
+      {
+        "id": "CASE_004_INDUSTRIAL_STRENGTH",
+        "description": "Maximum camber and pitch for high-impedance PSU environments.",
+        "overrides": {"bladeCount": 11, "radialClearance": 0.8, "twist_hub": 50, "hubDiameter": 40}
+      }
+    ]
+  }
+}

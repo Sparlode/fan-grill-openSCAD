@@ -1,0 +1,17 @@
+{
+  "pipeline": {
+    "cad_software": {
+      "tool": "OpenSCAD",
+      "method": "Programmatic 3D Modeling",
+      "notes": "Rotor requires mathematical sweeping via NACA airfoil libraries."
+    },
+    "simulation": {
+      "tool": "OpenFOAM",
+      "methods": [
+        "Steady-state MRF",
+        "Transient AMI"
+      ],
+      "meshing": "SnappyHexMesh / cfMesh"
+    }
+  }
+}

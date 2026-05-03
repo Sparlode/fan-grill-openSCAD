@@ -1,0 +1,49 @@
+{
+  "study_name": "92mm Industrial Fan - Static Pressure Sensitivity Analysis",
+  "version": "1.0.0",
+  "doe_type": "One-Factor-at-a-Time (OFAT) + Critical Edge Cases",
+  "objectives": {
+    "primary": "Identify geometry with >0.5 inH2O peak static pressure.",
+    "secondary": "Verify >90 CFM free delivery flow.",
+    "constraint": "Acoustic potential check (resonance with 8-spoke stator)."
+  },
+  "critical_sensitivity_points": [
+    {
+      "parameter": "radialClearance",
+      "hypothesis": "Reducing clearance from 1.0mm to 0.5mm will significantly increase pressure at high impedance.",
+      "test_values": [0.5, 1.0, 1.5]
+    },
+    {
+      "parameter": "bladeCount",
+      "hypothesis": "9 blades will provide smoother pressure delivery than 7, but may increase drag/power consumption.",
+      "test_values": [7, 9]
+    },
+    {
+      "parameter": "twist_hub",
+      "hypothesis": "Increased hub pitch (>45deg) is necessary to maintain flow against the dense PSU grill rings.",
+      "test_values": [40, 45, 50]
+    }
+  ],
+  "test_matrix": [
+    {
+      "id": "CASE_001_BASELINE",
+      "description": "Matches exact CSV design specifications.",
+      "overrides": {"bladeCount": 9, "radialClearance": 1.0, "twist_hub": 45, "hubDiameter": 35}
+    },
+    {
+      "id": "CASE_002_HIGH_PRESSURE",
+      "description": "Optimized for static pressure via tight tip clearance.",
+      "overrides": {"bladeCount": 9, "radialClearance": 0.5, "twist_hub": 45, "hubDiameter": 35}
+    },
+    {
+      "id": "CASE_003_LOW_DRAG",
+      "description": "7-blade configuration for high airflow / low noise potential.",
+      "overrides": {"bladeCount": 7, "radialClearance": 1.0, "twist_hub": 40, "hubDiameter": 35}
+    },
+    {
+      "id": "CASE_004_INDUSTRIAL_STRENGTH",
+      "description": "Maximum camber and pitch for high-impedance PSU environments.",
+      "overrides": {"bladeCount": 11, "radialClearance": 0.8, "twist_hub": 50, "hubDiameter": 40}
+    }
+  ]
+}
